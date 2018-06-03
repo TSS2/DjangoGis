@@ -1,0 +1,172 @@
+<!-- 管理员权限下 菜市场弹出层 -->
+<!doctype html>
+{% load static %}
+<html lang="en">
+  <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+      <meta http-equiv="Cache-Control" content="no-cache" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+      <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+      <meta name="format-detection" content="telephone=no" />
+      <link rel="stylesheet" href="http://www.jq22.com/jquery/font-awesome.4.6.0.css">
+		<link href="{% static "date/css/foundation.min.css" %}" rel="stylesheet" type="text/css">
+		<link href="{% static "date/css/foundation-datepicker.css" %}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://openlayers.org/en/v4.6.5/css/ol.css" type="text/css">
+    <link rel="stylesheet" href="{% static "bootstrap/css/bootstrap.css" %}" type="text/css">
+    
+    <style>
+    </style>
+    <script src="{% static "js/jquery-3.3.1.min.js" %}"></script>
+    <script src="https://cdn.hcharts.cn/highcharts/highcharts.js"></script>
+    <script src="{% static "js/highchats.js" %}"></script>
+    <script src="{% static "date/js/jquery-1.11.3.min.js" %}"></script>
+		<script src="{% static "date/js/foundation-datepicker.js" %}"></script>
+    <script src="{% static "date/js/locales/foundation-datepicker.zh-CN.js" %}"></script>	
+    <!-- <script src="{% static "js/date.js" %}"></script> -->
+    <script src="{% static "dafen/lib/jquery.raty.min.js" %}"></script>
+    <style>
+      .container { margin:0 auto; }
+      </style>
+    <title>{{ name }}</title>
+  </head>
+  <body>
+    <div class="container" id="container">
+            <h1 style="text-align: center">城市菜市场社区配套服务评价工具</h1>
+          <h3 style="text-align: center">{{ name }}问卷调查结果</h3>
+          <h6 style="text-align: center">{{ date_time }}</h6>
+          <ul class="list-group col-sm-8 col-sm-offset-1">
+            
+           <li class="list-group-item">
+              <div class="input-group col-sm-offset-3" id="star1">菜品新鲜程度
+              </div>
+              <div id="result1"></div>
+          </li>
+            <li class="list-group-item">
+                <div class="input-group col-sm-offset-3" id="star2">乱认杂物
+                  </div>
+                  <div id="result2"></div>
+            </li>
+            <li class="list-group-item">
+              <div class="input-group col-sm-offset-3" id="star3">摊位整洁
+                </div>
+                <div id="result3"></div>
+          </li>
+          <li class="list-group-item">
+            <div class="input-group col-sm-offset-3" id="star4">从业人员工作衣帽洁净
+              </div>
+              <div id="result4"></div>
+        </li>
+        <li class="list-group-item">
+          <div class="input-group col-sm-offset-3" id="star5">厕所卫生
+            </div>
+            <div id="result5"></div>
+      </li>
+      <li class="list-group-item">
+        <div class="input-group col-sm-offset-3" id="star6">总评分
+          </div>
+          <div id="result6"></div>
+    </li>
+        </ul>
+    </div>
+    <script>
+    var star1 = 0;
+    var star2 = 0;
+    var star3 = 0;
+    var star4 = 0;
+    var star5 = 0;
+    $('#result1').hide()
+    $('#market_id').hide()
+    $('#market_name').hide()
+    $('#page').hide()
+    // 菜品新鲜程度
+    $('#star1').raty({ 
+        path:"/static/dafen/lib/img/",             //图片地址
+        hints:["差","一般",'良好','满意','优秀'],   // 评分等价文本
+        score: {{ cpxxcd_fen }},   // 默认评分
+        number:5,   // 评分
+        size:100,
+        click:function(score,evt){
+            // alert(score+$('#result1').val())
+            star1 = score
+        },
+        target:"#result1",   // 存放用户评分
+        targetKeep:true     
+    });
+    // 乱认杂物
+    $('#result2').hide()
+    $('#star2').raty({ 
+        path:"/static/dafen/lib/img/",             //图片地址
+        hints:["差","一般",'良好','满意','优秀'],   // 评分等价文本
+        score: {{ lrzw_fen }},   // 默认评分
+        number:5,   // 评分
+        size:100,
+        click:function(score,evt){
+            // alert(score+$('#result2').text())
+            star2 = score
+        },
+        target:"#result2",   // 存放用户评分
+        targetKeep:true     
+    });
+    // 摊位整洁
+    $('#result3').hide()
+    $('#star3').raty({ 
+        path:"/static/dafen/lib/img/",             //图片地址
+        hints:["差","一般",'良好','满意','优秀'],   // 评分等价文本
+        score: {{ twzj_fen }},   // 默认评分
+        number:5,   // 评分
+        size:100,
+        click:function(score,evt){
+            // alert(score+$('#result3').text())
+            star3 = score
+        },
+        target:"#result3",   // 存放用户评分
+        targetKeep:true     
+    });
+    // 从业人员工作衣帽洁净
+    $('#result4').hide()
+    $('#star4').raty({ 
+        path:"/static/dafen/lib/img/",             //图片地址
+        hints:["差","一般",'良好','满意','优秀'],   // 评分等价文本
+        score: {{ cyryywzj_fen }},   // 默认评分
+        number:5,   // 评分
+        size:100,
+        click:function(score,evt){
+            // alert(score+$('#result4').text())
+            star4 = score
+        },
+        target:"#result4",   // 存放用户评分
+        targetKeep:true     
+    });
+    // 厕所卫生
+    $('#result5').hide()
+    $('#star5').raty({ 
+        path:"/static/dafen/lib/img/",             //图片地址
+        hints:["差","一般",'良好','满意','优秀'],   // 评分等价文本
+        score: {{ csws_fen }},   // 默认评分
+        number:5,   // 评分
+        size:100,
+        click:function(score,evt){
+            // alert(score+$('#result5').text())
+            star5 = score
+        },
+        target:"#result5",   // 存放用户评分
+        targetKeep:true     
+    });
+    
+    $('#star6').raty({ 
+        path:"/static/dafen/lib/img/",             //图片地址
+        hints:["差","一般",'良好','满意','优秀'],   // 评分等价文本
+        score: {{ pingfen }},   // 默认评分
+        number:25,   // 评分
+        size:100,
+        click:function(score,evt){
+            // alert(score+$('#result5').text())
+            star5 = score
+        },
+        target:"#result5",   // 存放用户评分
+        targetKeep:true     
+    });
+
+    </script>
+  </body>
+</html>

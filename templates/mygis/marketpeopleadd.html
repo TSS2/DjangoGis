@@ -1,0 +1,31 @@
+
+<!-- 信息采集员权限下 小区弹出层 -->
+<!doctype html>
+{% load static %}
+<html lang="en">
+  <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+      <meta http-equiv="Cache-Control" content="no-cache" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+      <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+      <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href="{% static "bootstrap/css/bootstrap.css" %}" type="text/css">
+    <style>
+    </style>
+    <script src="{% static "js/jquery-3.3.1.min.js" %}"></script>
+    <!-- <script src="{% static "js/index.js" %}"></script> -->
+    <script src="{% static "js/addtanwei.js" %}"></script>
+    <title>{{ name }}</title>
+  </head>
+  <body>
+    <div class="container" id="container">
+          <h2>{{ name }}</h2>
+          <ul class="list-group">
+            <li class="list-group-item">日流量<input type="text" class="form-control" placeholder="流量" id="people_flow"></li>  
+            <li class="list-group-item">总摊位数<input type="text" class="form-control" placeholder="总摊位数" id="tanwei_num"></li>
+            <li class="list-group-item">使用摊位数<input type="text" class="form-control" placeholder="使用摊位数" id="tanwei_use_num"></li>          
+          </ul>
+          <a class="btn btn-success btn-xs" href="#" role="button" id="{{ id }}" style="height:40px;width:70px;margin-left:250px;margin-top: 80px;text-align:center">添加</a>
+    </div>
+  </body>
+</html>

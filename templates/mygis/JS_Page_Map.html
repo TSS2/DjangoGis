@@ -1,0 +1,74 @@
+<!-- 菜市场价格采集详情 -->
+{% load static %}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html>
+    <head>
+        <title>{{ message }}</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.4.6&key=6dd1e2781a9f282d1a6a433d89d3b9e3"></script>
+        <link rel="stylesheet" type="text/css" href="{% static "bootstrap/css/bootstrap.css" %}"/>
+        <script src="{% static "js/jquery-3.3.1.min.js" %}"></script>
+        <script src="{% static "js/index.js" %}"></script>
+        <script src="{% static "js/js_page_map.js" %}"></script>
+           <!-- 引入layer实现弹出层效果 -->
+        <script src="{% static "layer/layer.js" %}"></script>  
+        
+    </head>
+    <body>
+
+        <div class="container">
+        <nav class="navbar navbar-default navbar-inverse">
+            <div class="container-fluid">
+              <div class="navbar-header">
+                <a class="navbar-brand" href="{% url 'mygis:gis' %}">{{ logo }}</a>
+              </div>
+
+              <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav ">
+                  <li id="store_id"><a href="{% url 'mygis:marketmessage_user' %}">菜市场</a></li>
+                  <li id="food_id"><a href="#">菜品</a></li>
+                  <li id="community_id"><a href="#">社区</a></li>
+                </ul>
+
+                <form class="navbar-form navbar-left">
+                  <div class="form-group">
+                    <input type="text" class="form-control" placeholder="请输入信息...." id="search_var_id">
+                  </div>
+                  <button type="submit" class="btn btn-default" id="search_id">查询</button>
+                </form>
+
+                <ul class="nav navbar-nav navbar-right">
+                    {% if user.is_authenticated %}
+                    <li><a href="#">{{ user.username }}</a></li>
+                    <button type="button" class="btn btn-default navbar-btn"><a href="{% url 'logout' %}">注销</a></button>
+                    {% else %}
+                    <button type="button" class="btn btn-default navbar-btn"><a href="{% url 'login' %}">登录</a></button>
+                    {% endif %}
+                </ul>
+              </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+          </nav>
+
+          <ol class="breadcrumb">
+            <li><a href="{% url 'mygis:gis' %}" id="first_daohang">首页</a></li>
+            <!-- <li><a href="{% url 'mygis:marketmessage_user' %}">{{ content }}</a></li> -->
+            <!-- <li><a href="{% url 'mygis:marketmessage_user' %}?page={{ page }}">{{ market_name }}</a></li> -->
+            <li class="active" id="second_daohang">{{ message }}</li>
+          </ol>
+          
+          <ul class="nav nav-stacked col-md-2">
+                <li role="presentation" class="active col-md-10 bg-success" value="菜市场更新"><a href="{% url 'mygis:updatemessage' %}">菜市场更新</a></li>
+                <li role="presentation" class="col-md-10 bg-success" value="菜品发布"><a href="{% url 'mygis:marketfoodedit' %}">菜品发布</a></li>
+                <li role="presentation" class="col-md-10 bg-success" value="菜品发布"><a href="{% url 'mygis:marketfoodsearch' %}">菜价查询</a></li>
+                <li role="presentation" class="col-md-10 bg-success" value="信息审核"><a href="{% url 'mygis:verifymessage' %}">信息审核</a></li>
+                <li role="presentation" class="col-md-10 bg-success" value="信息审核"><a href="{% url 'mygis:js_page_map' %}">高德地图</a></li>
+        </ul>
+          <!-- something here -->
+          <div id="container" style="width:900px; height:500px"></div>
+        <!-- <button type="button" class="btn btn-primary col-sm-offset-8">编辑</button> -->
+    </div>
+    <script type="text/javascript" src="https://webapi.amap.com/demos/js/liteToolbar.js"></script>
+      </body>
+</html>

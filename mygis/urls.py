@@ -1,0 +1,42 @@
+from django.conf.urls import url
+from . import views
+
+app_name = 'mygis'
+
+urlpatterns = [
+    url(r'^gis/',views.gis,name='gis'),
+    url(r'^message_manage/',views.message_manage,name='message_manage'),
+    url(r'^people_manage',views.people_manage,name='people_manage'),
+    url(r'^community',views.community,name='community'),
+    url(r'^updatemessage',views.updateMessage,name='updatemessage'),
+    url(r'^verifyemessage',views.verifyMessage,name='verifymessage'),
+    url(r'^addmessage',views.addmessage,name='addmessage'),
+    url(r'^querymessage',views.querymessage,name='querymessage'),
+    url(r'^marketmessage/$',views.marketmessage,name='marketmessage'),
+    url(r'^marketmessage_user/$',views.marketmessage_user,name='marketmessage_user'),
+    url(r'^marketdetail/',views.marketdetail,name='marketdetail'),
+    url(r'^marketdetailasses/',views.marketdetailasses,name='marketdetailasses'),
+    url(r'^marketfoodedit/',views.marketfoodedit,name='marketfoodedit'),
+    url(r'^marketfoodadd/',views.marketfoodadd,name='marketfoodadd'),
+    url(r'^marketfoodshow/',views.marketfoodshow,name='marketfoodshow'),
+    url(r'^marketfoodsearch/',views.marketfoodsearch,name='marketfoodsearch'),
+    url(r'^updatecommunity',views.updateCommunity,name='updateCommunity'),
+    url(r'^addcommunity',views.addcommunity,name='addcommunity'),
+    url(r'^updaterest',views.updateRest,name='updateRest'),
+    url(r'^addrest',views.addrest,name='addrest'),
+    url(r'^querycommunitymessage/$',views.querycommunitymessage,name='querycommunitymessage'),
+    url(r'^marketpeopleadd/',views.marketpeopleadd,name='marketpeopleadd'),
+    url(r'^marketmessages/',views.marketmessages,name='marketmessages'),
+    url(r'^markettanweiadd/',views.markettanweiadd,name='markettanweiadd'),
+    url(r'^checkmessage',views.checkmessage,name='checkmessage'),
+    url(r'^checkmarketfood',views.checkmarketfood,name='checkmarketfood'),
+    # url(r'^checkmarkettanwei',views.checkmarkettanwei,name='checkmarkettanwei'),
+    url(r'^checkcommunity',views.checkcommunity,name='checkcommunity'),
+    url(r'^marketsearchbyfood/',views.marketsearchbyfood,name='marketsearchbyfood'),
+    url(r'^marketsearchshow/$',views.marketsearchshow,name='marketsearchshow'),
+    url(r'^marketsearchbycom/$',views.marketsearchbycom,name='marketsearchbycom'),
+    url(r'^marketsearchbycan/$',views.marketsearchbycan,name='marketsearchbycan'),
+    # url(r'^checktarget',views.checktarget,name='checktarget'),
+    # url(r'^checkmarketprice',views.checkmarketprice,name='checkmarketprice'),
+    # url(r'^js_page_map/',views.js_page_map,name='js_page_map'),
+]

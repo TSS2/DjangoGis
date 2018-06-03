@@ -1,0 +1,399 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+  <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+      <meta http-equiv="Cache-Control" content="no-cache" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+      <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+      <meta name="format-detection" content="telephone=no" />
+
+    <link rel="stylesheet" href="https://openlayers.org/en/v4.6.5/css/ol.css" type="text/css">
+    <link rel="stylesheet" href="{% static "bootstrap/css/bootstrap.css" %}" type="text/css">
+    <link rel="stylesheet" href="{% static "css/gis.css" %}" type="text/css">
+    <style>
+      .map {
+        height: 450px;
+        /* width: 100%; */
+        margin-left: 192px;
+      }
+    </style>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ==" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"
+   integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
+   crossorigin=""></script>
+    <script src="https://openlayers.org/en/v4.6.5/build/ol.js" type="text/javascript"></script>
+    <script src="{% static "js/jquery-3.3.1.min.js" %}"></script>
+    <!-- <script src="{% static "js/showcom.js" %}"></script> -->
+    <script src="{% static "city/js/distpicker.data.js" %}"></script>
+	  <script src="{% static "city/js/distpicker.js" %}"></script>
+    <script src="{% static "city/js/main.js" %}"></script>
+    <script src="{% static "heatmap.js-2.0.5/build/heatmap.js" %}"></script>
+    <script src="{% static "heatmap.js-2.0.5/build/heatmap.min.js" %}"></script>
+    <script src="{% static "heatmap.js-2.0.5/plugins/leaflet-heatmap/leaflet-heatmap.js" %}"></script>
+    <!-- 引入layer实现弹出层效果 -->
+    <script src="{% static "layer/layer.js" %}"></script>
+    <title>{{ content }}</title>
+  </head>
+  <body>
+    <div class="container">
+        <h1 style="text-align: center">城市菜市场社区配套服务评价工具</h1>
+        {% csrf_token %}  
+        <nav class="navbar navbar-default navbar-inverse">
+            <div class="container-fluid">
+              <div class="navbar-header">
+                <a class="navbar-brand" href="#">{{ logo }}</a>
+              </div>
+
+              <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav ">
+                  <li id="store_id" value="首页"><a href="{% url 'mygis:gis' %}">首页</a></li>
+                  <!-- <li id="food_id" value="菜品"><a href="/kindfood">菜品</a></li> -->
+                  <li id="community_id" value="信息更新"><a href="{% url 'mygis:updatemessage' %}">信息更新</a></li>
+                  <li id="message_id" value="信息审核"><a href="{% url 'mygis:checkmessage' %}">信息审核</a></li>
+                  <li id="message_id" value="信息管理"><a href="{% url 'mygis:message_manage' %}">信息管理</a></li>
+                </ul>
+
+                <!-- <form class="navbar-form navbar-left">
+                  <div class="form-group">
+                    <input type="text" class="form-control" placeholder="请输入信息...." id="search_var_id">
+                  </div>
+                  <button type="submit" class="btn btn-default" id="search_id">查询</button>
+                </form> -->
+                <ul class="nav navbar-nav navbar-right">
+                    {% if user.is_authenticated %}
+                    <li><a href="#">{{ user.username }}</a></li>
+                    <button type="button" class="btn btn-default navbar-btn"><a href="{% url 'logout' %}">注销</a></button>
+                    {% else %}
+                    <button type="button" class="btn btn-default navbar-btn"><a href="{% url 'login' %}">登录</a></button>
+                    {% endif %}
+                </ul>
+              </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+          </nav>
+          <ol class="breadcrumb">
+            <li><a href="{% url 'mygis:gis' %}" id="first_daohang">首页</a></li>
+            <li><a href="{% url 'mygis:message_manage' %}" id="second_daohang">信息管理</a></li>
+            <li class="active" id="third_daohang">{{ content }}</li>
+          </ol>
+          <ul class="nav nav-stacked col-md-2">
+            <li role="presentation" class="active col-md-10 bg-success" value="指标查看"><a href="{% url 'mygis:message_manage' %}">指标查看</a></li>
+            <li role="presentation" class="col-md-10 bg-success" value="菜品查看"><a href="{% url 'mygis:marketsearchbyfood' %}">菜品查看</a></li>
+           
+          </ul>
+         
+            {% csrf_token %}
+          <div data-toggle="distpicker">
+            <div class="form-group col-md-2">
+              <label class="sr-only" for="province2">Province</label>
+              <select class="form-control" id="province2" data-province="---- 选择省 ----"></select>
+            </div>
+            <div class="form-group col-md-2">
+              <label class="sr-only" for="city2">City</label>
+              <select class="form-control" id="city2" data-city="---- 选择市 ----"></select>
+            </div>
+            <div class="form-group col-md-2">
+              <label class="sr-only" for="district2">District</label>
+              <select class="form-control" id="district2" data-district="---- 选择区 ----"></select>
+            </div>
+            <!-- <button class="btn btn-default" type="submit" id="market_com">基于社区</button> -->
+            <a  class="btn btn-default" id="btn_search" href="{% url 'mygis:marketsearchbycom' %}?search=">
+                基于餐馆
+            </a>
+            <!-- <button class="btn btn-default" type="submit" id="market_can">基于餐馆</button> -->
+            <a  class="btn btn-default" id="btn_search" href="{% url 'mygis:marketsearchbycan' %}?search=">
+                基于社区
+            </a>
+            <!-- <button class="btn btn-default" type="submit" id="#">确定</button> -->
+          </div>
+          <!-- </form> -->
+            <!-- {{ result }} -->
+          <div id="map" class="map">
+            <!-- popup标记 -->
+            <!-- <div id="heatmap" style="width: 100px; height: 100px;"></div> -->
+            <div id="popup" class="ol-popup" style="display: none;">
+              <div id="popup-title"></div>
+              <!-- <a></a> -->
+              <div id="popup-content" class="popup-content"></div>
+            </div>
+            <div id="popup-can" class="ol-popup-can" style="display: none;">
+                <div id="popup-can-title"></div>
+                <!-- <a></a> -->
+                <div id="popup-can-content" class="popup-can-content"></div>
+              </div>
+          </div>
+          <!-- <div id="heatmap"></div> -->
+    </div>
+    <script>
+    // function heatmap(id,X,Y,vals){
+    //   var ID = '#'+id
+    //   var heatmapInstance = h337.create({
+    //     container: document.querySelector(ID),
+    //   });
+
+    //   var data = {
+    //       max: 0,
+    //       // data: points
+    //       data:[{x:X,y:Y,value:vals}]
+    //   };
+    //   //57 //因为data是一组数据,web切图报价所以直接setData
+    //   heatmapInstance.setData(data); //数据绑定还可以使用
+    
+    //   }
+    //   heatmap('heatmap',0,0,0)
+      var canguan = '{{ json_result }}'
+
+     
+
+      var source = new ol.source.Vector();
+      
+      //获取样式
+      var styleFunction = function(feature,colors) {
+          var geometry = feature.getGeometry();
+          //线段样式
+          var styles = [
+          new ol.style.Style({
+              fill: new ol.style.Fill({     //矢量图层填充颜色，以及透明度
+                  color: '#0044CC'
+              }), 
+              stroke: new ol.style.Stroke({  //边界样式
+                  lineDash:[1],
+                  width: 1,  
+                  color: colors  
+              })  
+          })
+          ];
+          //箭头样式
+          geometry.forEachSegment(function(start, end) {
+              var arrowLonLat = [(end[0]+start[0])/2,(end[1]+start[1])/2];
+              var dx = end[0]- start[0]; 
+              var dy = end[1] - start[1];
+              var rotation = Math.atan2(dy, dx);
+              styles.push(new ol.style.Style({
+                  geometry: new ol.geom.Point(arrowLonLat),
+                  image: new ol.style.Icon({
+                      src: 'https://openlayers.org/en/v4.6.5/examples/data/arrow.png',
+                      anchor: [0.75, 0.5],
+                      rotateWithView: true,
+                      rotation: -rotation
+                  })
+              }));
+          });
+          return styles;
+      };
+      
+      //标记层
+      var layers = new ol.layer.Vector({
+          source: new ol.source.Vector()
+      });
+      
+      function line(coordinate1,coordinate2,colors){
+        var coordinate = new Array();
+        coordinate.push(coordinate1);
+        coordinate.push(coordinate2);
+        var geometry = new ol.geom.LineString();
+        for (var i = 0; i < coordinate.length; i++) {
+            geometry.appendCoordinate(coordinate[i]);
+            // 创建一个Feature，并设置好在地图上的位置
+            var anchor = new ol.Feature({
+                geometry: new ol.geom.Point(coordinate[i])
+            });  
+            // 设置样式，在样式中就可以设置图标
+            anchor.setStyle(new ol.style.Style({
+                image: new ol.style.Circle({  
+                    radius: 10,  
+                    stroke: new ol.style.Stroke({  
+                        color: '#fff'  
+                    }),  
+                    fill: new ol.style.Fill({  
+                        color: '#3399CC'  
+                    })  
+                })
+            }));
+            // 添加到之前的创建的layer中去
+            layers.getSource().addFeature(anchor);
+      }
+      
+        var feature = new ol.Feature({  
+          geometry:geometry
+        });
+        source.addFeature(feature);
+      
+        //标记点集
+        var vector = new ol.layer.Vector({
+          source: source,
+          style: styleFunction(feature,colors)
+        });
+        map.addOverlay(vector);
+      }
+      
+      var raster = new ol.layer.Tile({
+        source: new ol.source.XYZ({           //加载高德地图
+          url:'http://webst0{1-4}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=7&x={x}&y={y}&z={z}'  
+        })
+      });
+        
+        var map = new ol.Map({
+          target: 'map',
+          layers: [raster
+          ],
+          view: new ol.View({
+            
+            center: [11575931.700277366,3578569.073827034],
+            zoom: 16
+          }),
+          controls: ol.control.defaults().extend([  //获取坐标点
+            new ol.control.MousePosition()   // 鼠标位置控件
+          ]),
+        });
+        // =================================== //
+  
+       var view = map.getView();
+       var zoom = view.getZoom();
+       var map_center = view.getCenter();
+      //  alert(map_center)
+      
+        // alert()
+        var province = '{{ province }}';
+        var city = '{{ city }}';
+        var district = '{{ district }}';
+        //  alert(province)
+        $.post('/mygis/querymessage',{'province':province,'city':city,'district':district},function(data){
+      
+          var x =0;
+          var y = 0;
+          var id_array = new Array();   // 存储创建的div id
+          var i = 0;
+      
+          $.each(data,function(index,value){
+            var add_name = index;
+            var x = value[0];
+            var y = value[1];
+            var address = [x,y];
+            var id = 'popup'+x.replace('.','')
+            id_array.push(id);
+      
+            if (i==0)
+            {
+              if (address)
+              {
+                // alert(add_name)
+                map_center_tran = ol.proj.transform(address, 'EPSG:3857' ,'EPSG:4326');   // 设置第一个查询点为地图中心点
+                map_center = address;
+                center_name = add_name;
+              }
+            }
+            center =  ol.proj.transform(address, 'EPSG:3857' ,'EPSG:4326');
+            i++;
+            // 4326坐标系中计算两点之间的距离
+            var wgs84Sphere = new ol.Sphere(6378137); 
+            var distance = wgs84Sphere.haversineDistance(map_center_tran,center);
+            
+            // 创建新的div
+            // if (parseInt(distance) <= 500)
+            // {
+              $("#popup").after("<div id = "+id+" class = 'ol-popup'></div>");
+              // line(map_center,address,'red')     // 连线
+            // }
+            // if (parseInt(distance) > 500)
+            // {
+            //   $("#popup").after("<div id = "+id+" class = 'ol-popup-01'></div>");
+            //   line(map_center,address,'yellow')
+            // }
+            // $("#popup").after("<div id = "+id+" class = 'ol-popup'></div>");
+            
+            // 画线
+            
+            // line(map_center,address)
+            // 新建图层
+            var market = new ol.Overlay({
+              id:x,
+              position:address,
+              positioning:'center-center',
+              element: document.getElementById(id),     // 将动态生成的div添加到图层
+              stopEvent:false
+            });
+            map.addOverlay(market);
+      
+            $("#"+id).attr("title",add_name);
+            $("#"+id).bind({
+              
+            });
+      
+            // layer弹出层
+            var addr = '{{ addr }}'
+            var id_arrays = new Array()
+            $('#'+id).bind({
+              'click': function(){
+              // alert(address+add_name)
+              canguan_01 = canguan.toString().replace(/&quot;/g,'"')
+              var date = JSON.parse(canguan_01)
+              // alert(date)
+              
+              $.each(date,function(index,value){
+                var add_name = index;
+                var x = value[0];
+                var y = value[1];
+                var address_01 = [x,y];
+                var ids = 'popup'+x.replace('.','')
+                id_arrays.push(ids);
+                var map_center = address    // 以当前点为中心
+                map_center_tran = ol.proj.transform(address_01, 'EPSG:3857' ,'EPSG:4326');
+                center =  ol.proj.transform(map_center, 'EPSG:3857' ,'EPSG:4326');
+                // i++;
+                // 4326坐标系中计算两点之间的距离
+                var wgs84Sphere = new ol.Sphere(6378137); 
+                var distance = wgs84Sphere.haversineDistance(map_center_tran,center);
+                
+                // 创建新的div
+                if (parseInt(distance) <= 500)
+                {
+                  $("#popup-can").after("<div id = "+ids+" class = 'ol-popup-can'></div>");
+                  $('')
+                  line(map_center,address_01,'red')     // 连线
+                }
+                // if (parseInt(distance) > 500)
+                // {
+                //   $("#popup").after("<div id = "+id+" class = 'ol-popup-01'></div>");
+                //   line(map_center,address_01,'yellow')
+                // }
+                // $("#popup").after("<div id = "+id+" class = 'ol-popup'></div>");
+              
+                // 新建图层
+                var market = new ol.Overlay({
+                  id:x,
+                  position:address_01,
+                  positioning:'center-center',
+                  element: document.getElementById(ids),     // 将动态生成的div添加到图层
+                  stopEvent:false
+                });
+                map.addOverlay(market);
+          
+                $("#"+ids).attr("title",add_name);
+                $("#"+ids).bind({
+                  
+                });
+          
+                // // layer弹出层
+                // var addr = '{{ addr }}'
+                
+                // $('#'+id).on('click', function(){
+                //   alert(canguan)
+                // });
+              });
+              },
+              'mouseout':function(){
+                // $("#popup-can").remove()
+                // for(id in id_arrays){
+                  // $('#'+id_arrays[id]).remove()
+                  // alert(id_arrays[id])
+                // }
+              }
+          });
+          });
+        });
+        // });
+    </script>
+  </body>
+</html>

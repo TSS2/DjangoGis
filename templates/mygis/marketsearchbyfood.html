@@ -1,0 +1,316 @@
+<!-- 管理员菜品菜价搜索查看 -->
+
+<!doctype html>
+{% load static %}
+<html lang="en">
+  <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+      <meta http-equiv="Cache-Control" content="no-cache" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+      <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+      <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href="{% static "bootstrap/css/bootstrap.css" %}" type="text/css">
+
+    <script src="{% static "js/jquery-3.3.1.min.js" %}"></script>
+    <link rel="stylesheet" href="{% static "autocomplete/src/jquery.typeahead.css" %}">
+
+    <!-- <script src="http://www.jq22.com/jquery/jquery-1.10.2.js"></script> -->
+    <!--script src="./dist/jquery.typeahead.min.js"></script-->
+    <script src="{% static "autocomplete/src/jquery.typeahead.js" %}"></script>
+    <!-- 引入layer实现弹出层效果 -->
+    <script src="{% static "layer/layer.js" %}"></script>
+    <link rel="icon" href="https://static.jianshukeji.com/highcharts/images/favicon.ico">
+    <script src="https://img.hcharts.cn/highcharts/highcharts.js"></script>
+    <script src="https://img.hcharts.cn/highcharts/modules/exporting.js"></script>
+    <script src="https://img.hcharts.cn/highcharts/modules/series-label.js"></script>
+    <script src="https://img.hcharts.cn/highcharts/modules/oldie.js"></script>
+    <script src="https://img.hcharts.cn/highcharts-plugins/highcharts-zh_CN.js"></script>
+    
+    <title>{{ content }}</title>
+  </head>
+  <body>
+    <div class="container">
+        <h1 style="text-align: center">城市菜市场社区配套服务评价工具</h1>
+        <nav class="navbar navbar-default navbar-inverse">
+            <div class="container-fluid">
+              <div class="navbar-header">
+                <a class="navbar-brand" href="#">{{ logo }}</a>
+              </div>
+
+              <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav ">
+                  <li id="store_id" value="首页"><a href="{% url 'mygis:gis' %}">首页</a></li>
+                  <!-- <li id="food_id" value="菜品"><a href="/kindfood">菜品</a></li> -->
+                  <li id="community_id" value="信息更新"><a href="{% url 'mygis:updatemessage' %}">信息更新</a></li>
+                  <li id="message_id" value="信息审核"><a href="{% url 'mygis:checkmessage' %}">信息审核</a></li>
+                  <li id="message_id" value="信息管理"><a href="{% url 'mygis:message_manage' %}">信息管理</a></li>
+                </ul>
+
+                <!-- <form class="navbar-form navbar-left">
+                  <div class="form-group">
+                    <input type="text" class="form-control" placeholder="请输入信息...." id="search_var_id">
+                  </div>
+                  <button type="submit" class="btn btn-default" id="search_id">查询</button>
+                </form> -->
+                <ul class="nav navbar-nav navbar-right">
+                    {% if user.is_authenticated %}
+                    <li><a href="#">{{ user.username }}</a></li>
+                    <button type="button" class="btn btn-default navbar-btn"><a href="{% url 'logout' %}">注销</a></button>
+                    {% else %}
+                    <button type="button" class="btn btn-default navbar-btn"><a href="{% url 'login' %}">登录</a></button>
+                    {% endif %}
+                </ul>
+              </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+          </nav>
+          <ol class="breadcrumb">
+            <li><a href="{% url 'mygis:gis' %}" id="first_daohang">首页</a></li>
+            <li><a href="{% url 'mygis:message_manage' %}" id="second_daohang">信息管理</a></li>
+            <li class="active" id="third_daohang">{{ content }}</li>
+          </ol>
+          <ul class="nav nav-stacked col-md-2">
+            <li role="presentation" class="active col-md-10 bg-success" value="指标查看"><a href="{% url 'mygis:message_manage' %}">指标查看</a></li>
+            <li role="presentation" class="col-md-10 bg-success" value="菜品查看"><a href="{% url 'mygis:marketsearchbyfood' %}">菜品查看</a></li>
+          </ul>
+          <div class="js-result-container"></div>
+          <div id="div"></div>
+
+          <!-- <div style="width: 100%; max-width: 450px; margin: 0 auto;">     -->
+                <div style="width: 223px;margin-left: 201px">
+            <!-- <form method="GET"> -->
+                <!-- <div></div> -->
+                <div class="typeahead__container">
+                    <div class="typeahead__field">
+
+                        <span class="typeahead__query">
+                            <input class="js-typeahead"
+                                name="query"
+                                type="search"
+                                autofocus
+                                autocomplete="off"
+                                placeholder="菜品搜索">
+
+                        </span>
+                        <!-- <span class="typeahead__button"> -->
+                            <!-- <input type="text" id="input_value"> -->
+                            <a  class="btn btn-default" id="btn_search" href="{% url 'mygis:marketsearchbyfood' %}?search=">
+                                搜索
+                            </a>
+                        <!-- </span> -->
+
+                    </div>
+                </div>
+                
+            <!-- </form> -->
+            </div>
+            <!-- <div class="container1" style="width: 639px;margin-left: 478px;margin-top: -42px;">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>起始日期:
+                            <input type="text" class="span2" value="" id="dpd1">
+                          </th>
+                          <th>结束日期:
+                            <input type="text" class="span2" value="" id="dpd2">
+                          </th>
+                          <th>
+                            <a  class="btn btn-default" id="btn_search" href="{% url 'mygis:marketsearchbyfood' %}?search=">
+                                搜索
+                            </a>
+                          </th>
+                        </tr>
+                      </thead>
+                    </table>
+                  </div> -->
+                  <!-- 折线图 -->
+            <!-- <div id="container" style="max-width:800px;height:400px;margin-left: 213px;margin-top: 34px"></div> -->
+
+            <table class="table table-hover table-bordered" style="width: 900px">
+                    <caption style="text-align: center">{{ search }}</caption>
+                    <thead >
+                      <tr>
+                        <th style="text-align: center" >菜市场</th>
+                      </tr>
+                    </thead>
+                    {% for key in cus_list %}
+                    <tr>
+                      <td style="text-align: center"><a href="{% url 'mygis:marketsearchshow' %}?page={{ page }}&search={{ search }}&market_name={{ key }}">{{ key }}</a></td>
+                      <!-- <div id="task_id">{{ key.task_id }}</div> -->
+                      <!-- <td style="text-align: center">{{ key }}</td> -->
+                    {% endfor %} 
+                </table>
+
+                <nav aria-label="Page navigation">
+                        <ul class="pagination">
+                          <!-- 如果当前页有上一页 -->
+                          {% if customer.has_previous %}      
+                          <!-- {{ cur_list.previous_page_number }} -->
+                          <!-- 当前页的上一页按钮正常使用 -->
+                          <li>
+                            <a href="?page={{ customer.previous_page_number }}&search={{ search }}" aria-label="Previous">
+                              <span aria-hidden="true">&laquo;</span>
+                            </a>
+                          </li>
+                          {% else %}
+                          <!-- 当前页不存在上一页时 上一页按钮不可用-->
+                          <li>
+                              <li class="previous disabled"><a href="#" ><span aria-hidden="false">&laquo;</span></a></li>
+                              </a>
+                            </li>
+                          {% endif %}
+                          
+                          <!-- <li class="active"><a href="#" >1<span class="sr-only">(current)</span></a></li> -->
+                          <!-- 页码开始 -->
+                      
+                          {% for num in paginator.page_range %}
+                        
+                          {% if num == page %}
+                          
+                          <li class="item"><a href="?page={{ num }}&search={{ search }}" >{{ num }}</a></li>
+                          {% else %}
+                          
+                          <li class="item"><a href="?page={{ num }}&search={{ search }}" >{{ num }}</a></li>
+                          {% endif %}
+                          {% endfor %}
+                          <!-- 当前页是否有下一页 -->
+                          {% if customer.has_next %}
+                          <li>
+                            <a href="?page={{ customer.next_page_number }}&search={{ search }}" aria-label="Next">
+                              <span aria-hidden="true">&raquo;</span>
+                            </a>
+                          </li>
+                          {% else %}
+                          <li  class="next disabled">
+                              <a href="#" aria-label="Next">
+                                <span aria-hidden="false">&raquo;</span>
+                              </a>
+                            </li>
+                          {% endif %}
+                            
+                        </ul>
+                      </nav>
+    </div>
+
+    <script>
+        // $('#input_value').hide()
+        var food = new Array()
+        '{% for f in food_set %}'
+        food.push('{{ f }}')
+        '{% endfor %}'
+        
+        var data = {
+            'food':food,
+        }
+
+        $.typeahead({
+		input: ".js-typeahead",
+		minLength: 1,       //搜索结果出来之前才搜索框内键入的字符数
+		maxItem: 15,        //搜索结果条数
+		order: "asc",       //搜索结果排序
+		hint: true,         //搜索结果呈现在搜索框里
+		// href: "http://www.baidu.com",    //点击事件跳转页面
+		emptyTemplate: '没有菜品，请重新输入',
+		source: {
+			food: {
+				data: data.food
+			},
+		},
+		// callback: {
+        //     // 点击搜索之后
+		// 	onSubmit: function () {
+        //         var input = $('.js-typeahead').val()
+        //         $.post('/mygis/marketsearchbyfood',{'input':input}
+                
+        //         )
+
+		// 	}
+		// },
+		debug: true
+        });
+        
+        $('#btn_search').bind({
+            mouseenter:function(){
+                var input = $('.js-typeahead').val()
+                var href = $('#btn_search').attr('href')+input
+                $('#btn_search').attr('href',href)
+            },
+            click:function(){
+                var input = $('#input_value').text()
+                var start_date = $('#dpd1').val()
+                var end_date = $('#dpd2').val()
+                $.get('/mygis/marketsearchbyfood/',{'start_date':start_date,'end_date':end_date})
+            }
+        })
+
+        // highchats
+        var chart = Highcharts.chart('container', {
+		title: {
+                text: 
+                {% if search %}
+                '{{ search }}价格'
+                {% else %}
+                '菜市场价格'
+                {% endif %}
+		},
+		// subtitle: {
+		// 		text: '数据来源：thesolarfoundation.com'
+		// },
+		yAxis: {
+				title: {
+						text: '价格'
+				}
+        },
+        xAxis:{
+            categories:[
+                {% for t in datetimes %}
+                '{{ t }}',
+                {% endfor %}
+            ]      // 日期
+        },
+		legend: {
+				layout: 'vertical',
+				align: 'right',
+				verticalAlign: 'middle'
+		},
+		// plotOptions: {
+		// 		series: {
+		// 				label: {
+		// 						connectorAllowed: false
+		// 				},
+		// 				pointStart: 2010
+		// 		}
+		// },
+		series: [
+            {% for key in messages %}
+            {
+				name: '{{ key.name }}',
+				data: [
+                    {% for val in key.data %}
+                    {{ val }},
+                    {% endfor %}
+                ]
+            },
+            {% endfor %}
+        ],
+		responsive: {
+				rules: [{
+						condition: {
+								maxWidth: 500
+						},
+						chartOptions: {
+								legend: {
+										layout: 'horizontal',
+										align: 'center',
+										verticalAlign: 'bottom'
+								}
+						}
+				}]
+		}
+});
+    </script>
+    <script src="{% static "date/js/jquery-1.11.3.min.js" %}"></script>
+	<script src="{% static "date/js/foundation-datepicker.js" %}"></script>
+    <script src="{% static "date/js/locales/foundation-datepicker.zh-CN.js" %}"></script>	
+    <script src="{% static "js/date01.js" %}"></script>
+  </body>
+</html>

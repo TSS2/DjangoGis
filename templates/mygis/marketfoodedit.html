@@ -1,0 +1,149 @@
+<!-- 管理员发布菜品种类 -->
+<!doctype html>
+{% load static %}
+<html lang="en">
+  <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+      <meta http-equiv="Cache-Control" content="no-cache" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+      <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+      <meta name="format-detection" content="telephone=no" />
+      <!-- <link rel="stylesheet" href="{% static "jQuery-menu/css/demo-menu-if.css" %}">
+      <script src="{% static "jQuery-menu/js/zepto.min.js" %}"></script> -->
+
+    <link rel="stylesheet" href="{% static "bootstrap/css/bootstrap.css" %}" type="text/css">
+    <script src="{% static "js/jquery-3.3.1.min.js" %}"></script>
+    <script src="{% static "js/index.js" %}"></script>
+    <!-- 引入layer实现弹出层效果 -->
+    <script src="{% static "layer/layer.js" %}"></script>   
+    <title>{{ content }}</title>
+  </head>
+  <body>
+    <div class="container">
+        <h1 style="text-align: center">城市菜市场社区配套服务评价工具</h1>
+        <nav class="navbar navbar-default navbar-inverse">
+            <div class="container-fluid">
+              <div class="navbar-header">
+                <a class="navbar-brand" href="#">{{ logo }}</a>
+              </div>
+
+              <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav ">
+                  <li id="store_id" value="首页"><a href="{% url 'mygis:gis' %}">首页</a></li>
+                  <!-- <li id="food_id" value="菜品"><a href="/kindfood">菜品</a></li> -->
+                  <li id="community_id" value="社区"><a href="{% url 'mygis:community' %}">社区</a></li>
+                  <li id="message_id" value="信息管理"><a href="{% url 'mygis:people_manage' %}">用户管理</a></li>
+                  <li id="message_id" value="信息管理"><a href="{% url 'mygis:message_manage' %}">信息管理</a></li>
+                </ul>
+
+                <!-- <form class="navbar-form navbar-left">
+                  <div class="form-group">
+                    <input type="text" class="form-control" placeholder="请输入信息...." id="search_var_id">
+                  </div>
+                  <button type="submit" class="btn btn-default" id="search_id">查询</button>
+                </form> -->
+                <ul class="nav navbar-nav navbar-right">
+                    {% if user.is_authenticated %}
+                    <li><a href="#">{{ user.username }}</a></li>
+                    <button type="button" class="btn btn-default navbar-btn"><a href="{% url 'logout' %}">注销</a></button>
+                    {% else %}
+                    <button type="button" class="btn btn-default navbar-btn"><a href="{% url 'login' %}">登录</a></button>
+                    {% endif %}
+                </ul>
+              </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+          </nav>
+          <ol class="breadcrumb">
+            <li><a href="{% url 'mygis:gis' %}" id="first_daohang">首页</a></li>
+            <li id="second_daohang"><a href="{% url 'mygis:message_manage' %}" id="second_a_daohang">信息管理</a></li>
+            <li class="active" id="third_daohang">{{ content }}</li>
+          </ol>
+
+          <ul class="nav nav-stacked col-md-2" style="height: 320px;">
+              <li role="presentation" class="active col-md-10 bg-success" value="菜市场更新"><a href="{% url 'mygis:updatemessage' %}">菜市场更新</a></li>
+              <li role="presentation" class="col-md-10 bg-success" value="菜品发布"><a href="{% url 'mygis:marketfoodedit' %}">菜品发布</a></li>
+              <li role="presentation" class="col-md-10 bg-success" value="信息审核"><a href="{% url 'mygis:verifymessage' %}">信息审核</a></li>
+          </ul>
+
+          <table class="table table-hover table-bordered" style="width: 900px">
+                <caption style="text-align: center">菜市场菜品信息</caption>
+                <thead >
+                  <tr>
+                    <!-- <th>编号</th> -->
+                    <th style="text-align: center" >菜市场</th>
+                    <th style="text-align: center" >地址</th>
+                    <th style="text-align: center" >日期</th>
+                    <th style="text-align: center" >菜品编辑</th>
+                  </tr>
+                </thead>
+                
+                <tbody>
+                  {% for key in cus_list %}
+                  <tr>
+                    <!-- <td>{{ i }}</td> -->
+                    <td style="text-align: center" >{{ key.market_name }}</td>
+                    <!-- <input type="hidden" name="next" id="marketdetail" value="{{ key.market_id }}"/> -->
+                    <td  style="text-align: center">{{ key.market_address }}</td>
+                    <td style="text-align: center">{{ key.data_time }}</td>
+                    <td  style="text-align: center">
+                        <a class="btn btn-success btn-xs" href="#" role="button" id="{{ key.market_id }}">查看</a>
+                        <a class="btn btn-info btn-xs" href="#" role="button" id="add_{{ key.market_id }}">添加</a>
+                    </td>
+                  </tr>
+                 
+                  <!-- {{ i|add:1 }} -->
+                  {% endfor %}
+                
+                </tbody>
+            </table>
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                  <!-- 如果当前页有上一页 -->
+                  {% if customer.has_previous %}      
+                  <!-- {{ cur_list.previous_page_number }} -->
+                  <!-- 当前页的上一页按钮正常使用 -->
+                  <li>
+                    <a href="?page={{ customer.previous_page_number }}" aria-label="Previous">
+                      <span aria-hidden="true">&laquo;</span>
+                    </a>
+                  </li>
+                  {% else %}
+                  <!-- 当前页不存在上一页时 上一页按钮不可用-->
+                  <li>
+                      <li class="previous disabled"><a href="#" ><span aria-hidden="false">&laquo;</span></a></li>
+                      </a>
+                    </li>
+                  {% endif %}
+                  
+                  <!-- <li class="active"><a href="#" >1<span class="sr-only">(current)</span></a></li> -->
+                  <!-- 页码开始 -->
+              
+                  {% for num in paginator.page_range %}
+                
+                  {% if num == page %}
+                  
+                  <li class="item"><a href="?page={{ num }}" >{{ num }}</a></li>
+                  {% else %}
+            
+                  <li class="item"><a href="?page={{ num }}" >{{ num }}</a></li>
+                  {% endif %}
+                  {% endfor %}
+                  <!-- 当前页是否有下一页 -->
+                  {% if customer.has_next %}
+                  <li>
+                    <a href="?page={{ customer.next_page_number }}" aria-label="Next">
+                      <span aria-hidden="true">&raquo;</span>
+                    </a>
+                  </li>
+                  {% else %}
+                  <li  class="next disabled">
+                      <a href="#" aria-label="Next">
+                        <span aria-hidden="false">&raquo;</span>
+                      </a>
+                    </li>
+                  {% endif %}
+                </ul>
+              </nav>
+    </div>
+  </body>
+</html>

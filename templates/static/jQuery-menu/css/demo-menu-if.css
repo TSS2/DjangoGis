@@ -1,0 +1,93 @@
+@charset "UTF-8";
+/**
+ *
+ * @authors leomYili
+ * @date    2016-01-07 10:39:01
+ * @version $Id$
+ */
+.ZMenu-left-container{
+    position: absolute;
+    width: 224px;
+    box-shadow: 1px 1px 2px rgba(0,0,0,.15);
+    background: #fff;
+}
+.ZMenu-left{
+    position: relative;
+    z-index: 0;
+    padding: 16px 0px;
+}
+.ZMenu-left .ZMenu-left-nav {
+    margin: 0px 0px 0px 2px;
+    position: relative;
+    padding: 0px;
+    width: 222px;
+    overflow-x: hidden;/*超过会消失*/
+}
+.child-item-nav{
+    margin: 0px 0px 0px 0px;
+    padding: 0px;
+    width: 222px;
+    position: relative;
+    overflow-x: hidden;/*超过会消失*/
+}
+.ZMenu-left .ZMenu-left-label {
+    position: absolute;
+    top: 16px;
+    left: 0px;
+    z-index: -1;
+    width: 218px;
+    height: 45px;
+    border-left: 6px solid #3794E3;
+    background-color: #fafafa;
+    transition: top 0.2s;
+}
+.ZMenu-left-nav-item:first-child {
+    border-top: none;
+}
+.ZMenu-left-nav-item {
+    position: relative;
+    list-style: none;
+    height: 100%;
+    margin-left: 6px;
+    border-top: 1px solid #f7f7f7;
+}
+.ZMenu-left-nav-a {
+    position: relative;
+    text-decoration: none;
+    color: #212121;
+    font-size: 16px;
+    line-height: 45px;
+    padding-left: 64px;
+    display: block;
+    cursor: pointer;
+}
+.item-icon{
+    position: absolute;
+    top:10px;
+    left:25px;
+}
+.item::after {
+    content: "";
+    display: inline-block;
+    vertical-align: middle;
+    width: 6px;
+    height: 6px;
+    border-left: 2px solid #ccc;
+    border-bottom: 2px solid #ccc;
+    display: inline-block;
+    margin-left: 5px;
+    vertical-align: middle;
+    position: relative;
+    top: -4px;
+    -webkit-transition: all 0.3s ease-in-out;
+}
+.up::after {
+    -webkit-transform: rotate(135deg);
+    transform: rotate(135deg);
+    top: 1px;
+}
+.down::after {
+    webkit-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+    top: -4px;
+}

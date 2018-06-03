@@ -1,0 +1,185 @@
+{% load static %}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html>
+    <head>
+        <title>菜市场</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link rel="stylesheet" type="text/css" href="{% static "bootstrap/css/bootstrap.css" %}"/>
+        <script src="{% static "js/jquery-3.3.1.min.js" %}"></script>
+        <script src="{% static "js/checkfood.js" %}"></script>
+    </head>
+    <body>
+
+        <div class="container">
+            <h1 style="text-align: center">城市菜市场社区配套服务评价工具</h1>
+        <nav class="navbar navbar-default navbar-inverse">
+          {% if user.username != 'admin' %}
+            <div class="container-fluid">
+              <div class="navbar-header">
+                <a class="navbar-brand" href="{% url 'mygis:gis' %}">{{ logo }}</a>
+              </div>
+
+              <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav ">
+                  <li id="store_id"><a href="{% url 'mygis:marketmessage_user' %}">菜市场</a></li>
+                  <li id="food_id"><a href="{% url 'mygis:querycommunitymessage' %}">小区</a></li>
+                  <li id="community_id"><a href="#">餐馆</a></li>
+                </ul>
+
+                <!-- <form class="navbar-form navbar-left">
+                  <div class="form-group">
+                    <input type="text" class="form-control" placeholder="请输入信息...." id="search_var_id">
+                  </div>
+                  <button type="submit" class="btn btn-default" id="search_id">查询</button>
+                </form> -->
+
+                <ul class="nav navbar-nav navbar-right">
+                    {% if user.is_authenticated %}
+                    <li><a href="#">{{ user.username }}</a></li>
+                    <button type="button" class="btn btn-default navbar-btn"><a href="{% url 'logout' %}">注销</a></button>
+                    {% else %}
+                    <button type="button" class="btn btn-default navbar-btn"><a href="{% url 'login' %}">登录</a></button>
+                    {% endif %}
+                </ul>
+              </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+            {% else %}
+            <!-- 管理员 -->
+            <div class="container-fluid">
+                <div class="navbar-header">
+                  <a class="navbar-brand" href="#">{{ logo }}</a>
+                </div>
+  
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                  <ul class="nav navbar-nav ">
+                    <li id="store_id" value="首页"><a href="{% url 'mygis:gis' %}">首页</a></li>
+                    <!-- <li id="food_id" value="菜品"><a href="/kindfood">菜品</a></li> -->
+                    <li id="community_id" value="信息更新"><a href="{% url 'mygis:updatemessage' %}">信息更新</a></li>
+                    <li id="message_id" value="信息审核"><a href="{% url 'mygis:checkmessage' %}">信息审核</a></li>
+                    <li id="message_id" value="信息管理"><a href="{% url 'mygis:message_manage' %}">信息管理</a></li>
+                  </ul>
+  
+                  <!-- <form class="navbar-form navbar-left">
+                    <div class="form-group">
+                      <input type="text" class="form-control" placeholder="请输入信息...." id="search_var_id">
+                    </div>
+                    <button type="submit" class="btn btn-default" id="search_id">查询</button>
+                  </form> -->
+                  <ul class="nav navbar-nav navbar-right">
+                      
+                      {% if user.is_authenticated %}
+                      <li><a href="#">{{ user.username }}</a></li>
+                      <button type="button" class="btn btn-default navbar-btn"><a href="{% url 'logout' %}">注销</a></button>
+                      {% else %}
+                      <button type="button" class="btn btn-default navbar-btn"><a href="{% url 'login' %}">登录</a></button>
+                      {% endif %}
+                  </ul>
+                </div><!-- /.navbar-collapse -->
+              </div><!-- /.container-fluid -->
+            {% endif %}
+          </nav>
+
+          <ol class="breadcrumb">
+            <li><a href="{% url 'mygis:gis' %}" id="first_daohang">首页</a></li>
+            <!-- <li id="second_daohang"><a href="{% url 'mygis:checkmessage' %}" id="second_a_daohang">{{ message }}</a></li> -->
+            <li id="second_daohang"><a href="{% url 'mygis:marketmessage_user' %}" id="second_a_daohang">{{ content }}</a></li>
+            <!-- <li class="active" id="second_daohang">{{ content }}</li> -->
+            <li class="active" id="second_daohang">第{{ page }}页</li>
+          </ol>
+          <table class="table table-hover table-bordered">
+              <caption style="text-align: center">菜市场信息</caption>
+              <thead>
+                <tr>
+                  <!-- <th>编号</th> -->
+                  <th style="text-align: center">名称</th>
+                  <th style="text-align: center">位置</th>
+                  <th style="text-align: center">时间</th>
+                  {% if user.username != 'admin' %}
+                  <th style="text-align: center">状态</th>
+                  {% endif %}
+                </tr>
+              </thead>
+              
+              <tbody>
+                {% for key in cus_list %}
+                {% if key.status == '0' %}
+                <tr>
+                  <!-- <td>{{ i }}</td> -->
+                  <td style="text-align: center" id="marketdetail"><a href="{% url 'mygis:marketdetail' %}?page={{ page }}&market_name={{ key.market_name }}">{{ key.market_name }}</a></td>
+                  <td  style="text-align: center">{{ key.market_address }}</td>
+                  <td style="text-align: center">{{ key.data_time }}</td>
+                  {% if user.username != 'admin' %}
+                  <td class="bg-danger" style="text-align: center">未查看</td>
+                  {% endif %}
+                </tr>
+                {% endif %}
+                {% if key.status == '1' %}
+                <tr>
+                  <!-- <td>{{ i }}</td> -->
+                  <td style="text-align: center"><a href="{% url 'mygis:marketdetail' %}?page={{ page }}&market_name={{ key.market_name }}">{{ key.market_name }}</a></td>
+                  <td style="text-align: center">{{ key.market_address }}</td>
+                  <td style="text-align: center">{{ key.data_time }}</td>
+                  {% if user.username != 'admin' %}
+                  <td style="text-align: center">已查看</td>
+                  {% endif %}
+                </tr>
+                {% endif %}
+                <!-- {{ i|add:1 }} -->
+                {% endfor %}
+              
+              </tbody>
+          </table>
+          <nav aria-label="Page navigation">
+              <ul class="pagination">
+                <!-- 如果当前页有上一页 -->
+                {% if customer.has_previous %}      
+                <!-- {{ cur_list.previous_page_number }} -->
+                <!-- 当前页的上一页按钮正常使用 -->
+                <li>
+                  <a href="?page={{ customer.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+                {% else %}
+                <!-- 当前页不存在上一页时 上一页按钮不可用-->
+                <li>
+                    <li class="previous disabled"><a href="#" ><span aria-hidden="false">&laquo;</span></a></li>
+                    </a>
+                  </li>
+                {% endif %}
+                
+                <!-- <li class="active"><a href="#" >1<span class="sr-only">(current)</span></a></li> -->
+                <!-- 页码开始 -->
+            
+                {% for num in paginator.page_range %}
+              
+                {% if num == page %}
+                
+                <li class="item"><a href="?page={{ num }}" >{{ num }}</a></li>
+                {% else %}
+          
+                <li class="item"><a href="?page={{ num }}" >{{ num }}</a></li>
+                {% endif %}
+                {% endfor %}
+                <!-- 当前页是否有下一页 -->
+                {% if customer.has_next %}
+                <li>
+                  <a href="?page={{ customer.next_page_number }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+                {% else %}
+                <li  class="next disabled">
+                    <a href="#" aria-label="Next">
+                      <span aria-hidden="false">&raquo;</span>
+                    </a>
+                  </li>
+                {% endif %}
+              </ul>
+            </nav>
+    </div>
+
+      </body>
+</html>

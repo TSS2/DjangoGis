@@ -1,0 +1,31 @@
+
+<!-- 管理员权限下 菜市场弹出层 -->
+<!doctype html>
+{% load static %}
+<html lang="en">
+  <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+      <meta http-equiv="Cache-Control" content="no-cache" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+      <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+      <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" href="https://openlayers.org/en/v4.6.5/css/ol.css" type="text/css">
+    <link rel="stylesheet" href="{% static "bootstrap/css/bootstrap.css" %}" type="text/css">
+    <style>
+    </style>
+    <script src="{% static "js/jquery-3.3.1.min.js" %}"></script>
+    <title>{{ name }}</title>
+  </head>
+  <body>
+    <div class="container" id="container">
+          <h2>{{ name }}</h2>
+          <ul class="list-group">
+            <!-- <li class="list-group-item"><span class="glyphicon glyphicon-object-align-bottom" aria-hidden="true"></span><a href="#" class="text-center">{{ name }}</a></li> -->
+            <li class="list-group-item">show</li>
+            <li class="list-group-item" id="first">{{ id }}</li>
+            <!-- <li class="list-group-item">Porta ac consectetur ac</li> -->
+            <!-- <li class="list-group-item">Vestibulum at eros</li> -->
+          </ul>
+    </div>
+  </body>
+</html>

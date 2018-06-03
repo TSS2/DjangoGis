@@ -1,0 +1,140 @@
+/* popup样式 */
+
+.ol-popup  
+        {  
+            position:absolute;  
+            background-color:rgb(248, 6, 6);  
+            padding:4px;  
+            border-radius:10px;  
+            border:1px solid #cccccc;  
+            bottom:-5px;  
+            left:-6px;  
+            height: 10px;
+            width: 10px
+        }  
+
+.ol-popup-can
+        {  
+            position:absolute;  
+            background-color:rgb(6, 248, 6);  
+            padding:4px;  
+            border-radius:10px;  
+            border:1px solid #cccccc;  
+            bottom:-5px;  
+            left:-6px;  
+            height: 10px;
+            width: 10px
+        } 
+.ol-popup-can
+        {  
+            position:absolute;  
+            background-color:rgb(6, 248, 6);  
+            padding:4px;  
+            border-radius:10px;  
+            border:1px solid #cccccc;  
+            bottom:-5px;  
+            left:-6px;  
+            height: 10px;
+            width: 10px
+        }
+.ol-popup-01
+        {  
+            position:absolute;  
+            background-color:rgb(4, 250, 58);  
+            padding:4px;  
+            border-radius:10px;  
+            border:1px solid #cccccc;  
+            bottom:-5px;  
+            left:-6px;  
+            height: 10px;
+            width: 10px
+        }
+/* .ol-popup:after,.ol-popup:before  
+        {  
+            top:100%;  
+            border:solid transparent;  
+            content:" ";  
+            height:0px;  
+            width:0px;  
+            position:absolute;  
+            pointer-events:none;  
+        }   */
+.ol-popup:after  
+        {  
+            border-top-color:white;  
+            border-width:10px;  
+            left:48px;  
+            margin-left:-10px;  
+        }
+.ol-popup-can:after  
+        {  
+            border-top-color:white;  
+            border-width:10px;  
+            left:48px;  
+            margin-left:-10px;  
+        }
+.ol-popup-com:after  
+        {  
+            border-top-color:white;  
+            border-width:10px;  
+            left:48px;  
+            margin-left:-10px;  
+        }
+.ol-popup-01:after  
+        {  
+            border-top-color:white;  
+            border-width:10px;  
+            left:48px;  
+            margin-left:-10px;  
+        }
+.popup-content
+        {
+            background-color: aqua;
+            height: 100px;
+            width: 200px;
+            margin-left: -76px;
+            margin-top: -128px
+        }
+.popup-can-content
+        {
+            background-color: aqua;
+            height: 100px;
+            width: 200px;
+            margin-left: -76px;
+            margin-top: -128px
+        }
+.popup-content:after
+        {
+            background-color: aqua;
+            height: 100px;
+            width: 150px;
+        }
+.popup-can-content:after
+        {
+            background-color: aqua;
+            height: 100px;
+            width: 150px;
+        }
+/* .ol-popup:before  
+        {  
+            border-top-color:#cccccc;  
+            border-width:11px;  
+            left: 48px;  
+            left:-11px;  
+        }  
+.ol-popup-closer  
+        {  
+            text-decoration:none;  
+            position:absolute;  
+            top:2px;  
+            right:8px;  
+        }  
+#popup-content  
+        {  
+            font-size:14px;  
+            font-family:"微软雅黑";  
+        }  
+#popup-content .markerInfo  
+        {  
+            font-weight:bold;  
+        }   */
